@@ -1,48 +1,58 @@
+
 # SoilSense – Google Earth Engine Vegetation Index Calculator
 
+
+
+
+
 ## 📌 Overview
-**SoilSense** is a full-stack web application that allows users to:
+
+SoilSense is a full-stack web application that allows users to:
+
 - Select an area on an interactive map.
 - Calculate vegetation and water indices:
-  - **NDVI** (Normalized Difference Vegetation Index)  
-  - **NDMI** (Normalized Difference Moisture Index)  
-  - **NDSI** (Normalized Difference Snow Index)  
-  - **GCI** (Green Chlorophyll Index)  
-  - **EVI** (Enhanced Vegetation Index)  
-  - **AWEI** (Automated Water Extraction Index)  
-  - **LST** (Land Surface Temperature)  
+    - NDVI (Normalized Difference Vegetation Index)
+    - NDMI (Normalized Difference Moisture Index)
+    - NDSI (Normalized Difference Snow Index)
+    - GCI (Green Chlorophyll Index)
+    - EVI (Enhanced Vegetation Index)
+    - AWEI (Automated Water Extraction Index)
+    - LST (Land Surface Temperature)
 - View results as interactive graphs and interpretive summaries.
 - Save and revisit past calculations.
 
 The project is divided into two main parts:
-- **Backend** – Node.js + Express API  
-- **Frontend** – React.js client interface  
 
----
+- Backend – Node.js + Express API
+- Frontend – React.js client interface
 
 ## 📂 Folder Structure
 
 project-root/
-│
-├── backend/ # Node.js + Express API
-├── frontend/ # React.js frontend
-├── .gitignore
-├── requirements.txt # Python dependencies for GEE calculations
-└── README.md # Project documentation
 
+├── backend/ 
+
+├── frontend/
+
+├── .gitignore
+
+├── requirements.txt
+
+└── README.md # Project documentation
 
 ---
 
 ## 🛠 Prerequisites
-- **Node.js** (v16+ recommended)  
-- **Python 3.9+**  
-- **MongoDB** (Local or Atlas)  
-- **Google Earth Engine** account + Service Account credentials  
+- **Node.js** → v16 or later  
+- **Python** → 3.9 or later  
+- **MongoDB** → Local or MongoDB Atlas  
+- **Google Earth Engine** → Account + Service Account credentials  
 
 ---
 
-## ⚙️ Environment Variables
-Create a `.env` file **inside the `backend/` folder** with the following content:
+## ⚙️ Environment Setup
+
+Create a `.env` file **inside the `backend/` folder** with the following variables:
 
 ```env
 GOOGLE_APPLICATION_CREDENTIALS=./<your_service_account_json>.json
@@ -50,81 +60,50 @@ GEE_PROJECT_ID=<your_gee_project_id>
 EARTHENGINE_INIT_MODE=localhost
 JWT_SECRET=<your_secret_key>
 MONGO_URI=<your_mongo_connection_string>
+```
+## 🚀 Backend Setup
 
-Notes:
+### Navigate to backend folder
+```cd backend```
 
-    The <your_service_account_json>.json file must be placed in the project root, alongside the backend/ and frontend/ folders.
+### Install backend dependencies
+```npm install express cors mongoose bcryptjs jsonwebtoken express-validator dotenv```
 
-    Do NOT commit this JSON file to GitHub.
+### Install Python dependencies for Google Earth Engine
+```pip install -r ../requirements.txt```
 
-    Replace <...> placeholders with your actual values.
+### Start backend server
+```node index.js```
 
-🚀 Backend Setup
+## 🎨 Frontend Setup
 
-# Navigate to backend folder
+### Navigate to frontend folder
+```cd frontend```
+
+### Install frontend dependencies
+```npm install```
+
+### Start React development server
+```npm start```
+## 🌍 Google Earth Engine Setup
+
+- Create a Service Account in your Google Cloud Console for your GEE project.
+- Download the JSON key file for the service account.
+- Place the file in the project root.
+- Update ```.env``` in ```backend/``` with:
+    - Path to the JSON file (GOOGLE_APPLICATION_CREDENTIALS)
+    - Your GEE Project ID (GEE_PROJECT_ID)
+## ▶ Running the Project
+
+- Start MongoDB (local or Atlas).
+- Start the backend:
+```
 cd backend
-
-# Install backend dependencies
-npm install express cors mongoose bcryptjs jsonwebtoken express-validator dotenv
-
-# Install Python packages for GEE
-pip install -r requirements.txt
-
-# Start backend server
-npm start
-
-🎨 Frontend Setup
-
-# Navigate to frontend folder
-cd frontend
-
-# Install frontend dependencies
-npm install
-
-# Start React app
-npm start
-
-🌍 Google Earth Engine Setup
-
-    Create a Service Account in your GEE project.
-
-    Download the JSON key file for the service account.
-
-    Place it in the project root (not inside backend or frontend).
-
-    Update .env in backend/ with:
-
-        Path to the JSON file.
-
-        GEE Project ID.
-
-📄 .gitignore
-
-Your .gitignore should include:
-
-# Node.js
-node_modules/
-.env
-
-# Python
-__pycache__/
-*.pyc
-
-# Credentials
-*.json
-
-▶ Running the Project
-
-    Start MongoDB (local or connect to Atlas).
-
-    Start the backend:
-
-cd backend
-npm start
-
-Start the frontend:
-
+node index.js
+```
+- Start the frontend
+```
 cd frontend
 npm start
-
-Open the app in your browser: http://localhost:3000
+```
+- Open the app in your browser : http://localhost:3000
