@@ -91,7 +91,7 @@ def calculate_indices(geometry, year):
 def main():
     try:
         request = json.loads(sys.argv[1])
-        geometry = request["geometry"][0]  # assuming only one shape
+        geometry = request["geometry"][0] # assuming only one shape
         years = request.get("years", [])
 
         results = {}
@@ -101,12 +101,10 @@ def main():
             values = ee.Dictionary(index_values).getInfo()
             results[year] = values
 
-        # ✅ Print only once at the end
         print(json.dumps(results))
 
     except Exception as e:
         print(json.dumps({"error": str(e)}))
-
 
 if __name__ == "__main__":
     main()

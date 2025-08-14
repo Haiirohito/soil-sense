@@ -1,93 +1,84 @@
+// routes/calculate.js
 const express = require("express");
 const router = express.Router();
 const { spawn } = require("child_process");
 const Calculation = require("../models/Calculation");
 const authMiddleware = require("../middleware/authMiddleware");
 
+// ===================== CALCULATION ROUTE =====================
 router.post("/", authMiddleware, async (req, res) => {
     console.log("✅ /calculate route hit");
-
     console.log("User ID from token:", req.user.id);
 
-    const body = JSON.stringify(req.body);
-    const python = spawn("python", ["calculate_indices.py", body]);
+    try {
+        const body = JSON.stringify(req.body);
+        const python = spawn("python", ["calculate_indices.py", body]);
 
-    let result = "";
-    let errorOutput = "";
+        let pythonData = "";
+        let pythonError = "";
 
-    python.stdout.on("data", (data) => {
-        result += data.toString();
-    });
+        python.stdout.on("data", (data) => {
+            pythonData += data.toString();
+        });
 
-    python.stderr.on("data", (data) => {
-        errorOutput += data.toString();
-    });
+        python.stderr.on("data", (data) => {
+            pythonError += data.toString();
+        });
 
-    python.on("close", async (code) => {
-        if (code !== 0 || !result) {
-            console.error("❌ Python script error:", errorOutput);
-            return res
-                .status(500)
-                .json({ error: "Python script failed", details: errorOutput });
-        }
-
-        try {
-            const parsed = JSON.parse(result);
-
-            // Handle if script itself returned an error in JSON
-            if (parsed.error) {
-                console.error("❌ Script returned error:", parsed.error);
-                return res
-                    .status(500)
-                    .json({ error: "Script error", details: parsed.error });
+        python.on("close", async (code) => {
+            if (code !== 0) {
+                console.error(`Python script exited with code ${code}: ${pythonError}`);
+                return res.status(500).json({ error: "Calculation failed", details: pythonError });
             }
 
-            const newCalculation = new Calculation({
-                userId: req.user.id,
-                geometry: req.body.geometry,
-                years: req.body.years,
-                startYear: Math.min(...req.body.years),
-                endYear: Math.max(...req.body.years),
-                results: parsed.map(yearData => ({
-                    year: yearData.year,
-                    indices: {
-                        NDVI: yearData.NDVI,
-                        NDMI: yearData.NDMI,
-                        NDSI: yearData.NDSI,
-                        GCI: yearData.GCI,
-                        EVI: yearData.EVI,
-                        AWEI: yearData.AWEI,
-                        LST: yearData.LST
-                    }
-                }))
-            });
+            try {
+                const result = JSON.parse(pythonData);
 
-            await newCalculation
-                .save()
-                .then(() => {
-                    console.log("✅ Calculation saved to DB");
-                    res.json(parsed);
-                })
-                .catch((err) => {
-                    console.error("❌ DB Save error:", err);
-                    res.status(500).json({ error: "Failed to save to DB", details: err });
+                // Save calculation in MongoDB
+                const newCalculation = new Calculation({
+                    userId: req.user.id,
+                    geometry: req.body.geometry,
+                    results: result,
                 });
-        } catch (err) {
-            console.error("❌ JSON parse error:", result);
-            res
-                .status(500)
-                .json({ error: "Failed to parse Python output", raw: result });
-        }
-    });
+
+                await newCalculation.save();
+
+                const years = Object.keys(result).sort();
+                res.json({
+                    geometry: req.body.geometry,
+                    results: result,
+                    years,
+                    createdAt: newCalculation.createdAt
+                });
+            } catch (parseErr) {
+                console.error("❌ JSON parse error:", pythonData);
+                res.status(500).json({ error: "Invalid JSON output from Python", details: pythonData });
+            }
+        });
+    } catch (err) {
+        console.error("❌ Server error:", err);
+        res.status(500).json({ error: "Server error" });
+    }
 });
 
+// ===================== HISTORY ROUTE =====================
 router.get("/history", authMiddleware, async (req, res) => {
     try {
-        const calculations = await Calculation.find({ userId: req.user.id }).sort({ createdAt: -1 });
-        res.json(calculations);
+        const history = await Calculation.find({ userId: req.user.id })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        const formattedHistory = history.map(entry => ({
+            _id: entry._id,
+            createdAt: entry.createdAt,
+            geometry: entry.geometry,
+            results: entry.results || {}, // Ensure results exist
+        }));
+
+        res.json(formattedHistory);
     } catch (err) {
-        console.error("Error fetching history:", err);
-        res.status(500).json({ error: "Failed to fetch history" });
+        console.error("❌ Error fetching history:", err);
+        res.status(500).json({ error: "Failed to fetch calculation history" });
     }
 });
 

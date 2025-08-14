@@ -17,21 +17,24 @@ const Dashboard = () => {
     if (!token) {
       navigate("/");
     } else {
-      setName(userName);
+      setName(userName || "");
       fetchHistory();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   const fetchHistory = async () => {
     try {
       const data = await getCalculationHistory();
-      setHistory(data);
+      setHistory(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to fetch history:", err);
+      setHistory([]);
     }
   };
 
   const handleView = (calc) => {
+    // keep a fallback copy in case navigation state is lost on refresh
     localStorage.setItem("viewCalc", JSON.stringify(calc));
     navigate("/view-calculation", { state: { calc } });
   };
@@ -41,47 +44,42 @@ const Dashboard = () => {
       <Navbar />
       <div className="dashboard-container">
         <h1>Welcome, {name} 👋</h1>
-        <div className="dashboard-actions">
-          <button
-            className="new-calc-btn"
-            onClick={() => navigate("/calculation")}
-          >
+
+        <div className="dashboard-actions" style={{ marginTop: 12, marginBottom: 12 }}>
+          <button className="new-calc-btn" onClick={() => navigate("/calculation")}>
             ➕ New Calculation
           </button>
         </div>
+
         <div className="dashboard-grid">
           {history.length === 0 ? (
             <p>No previous calculations</p>
           ) : (
             history.map((c) => {
-              const timestamp = new Date(c.createdAt).toLocaleString();
-              const indexList = c.result && typeof c.result === "object"
-                ? Object.keys(c.result).join(", ")
+              const timestamp = c.createdAt
+                ? new Date(c.createdAt).toLocaleString()
+                : "—";
+
+              // results is an object keyed by year strings: { "2020": {...}, "2021": {...} }
+              const yearKeys = c.results ? Object.keys(c.results) : [];
+              const firstYear = yearKeys.length ? yearKeys.sort()[0] : null;
+              const indexList = firstYear && c.results[firstYear]
+                ? Object.keys(c.results[firstYear]).join(", ")
                 : "No results";
-              const years = [];
-              for (let y = c.startYear; y <= c.endYear; y++) {
-                years.push(y);
-              }
+
+              // we’ll pass geometry + results only; the view page derives years
+              const viewPayload = {
+                geometry: c.geometry?.[0]?.geometry || null,
+                results: c.results || {},
+              };
 
               return (
                 <div className="dashboard-tile" key={c._id}>
                   <MiniMap geometry={c.geometry?.[0]?.geometry} />
                   <div className="tile-details">
-                    <p>
-                      <strong>🕒 Created:</strong> {timestamp}
-                    </p>
-                    <p>
-                      <strong>📈 Indices:</strong> {indexList}
-                    </p>
-                    <button
-                      onClick={() =>
-                        handleView({
-                          geometry: c.geometry?.[0]?.geometry,
-                          result: c.result,
-                          years,
-                        })
-                      }
-                    >
+                    <p><strong>🕒 Created:</strong> {timestamp}</p>
+                    <p><strong>📈 Indices:</strong> {indexList}</p>
+                    <button onClick={() => handleView(viewPayload)}>
                       View Details
                     </button>
                   </div>
