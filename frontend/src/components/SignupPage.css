@@ -1,0 +1,26 @@
+/* Left Side - Form */
+.signup-container {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 40px;
+}
+
+.signup-box {
+  width: 50%;
+  height: 60%;
+  text-align: center;
+}
+
+/* Sign In Link */
+.signin-text {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signin-text a {
+  color: blue;
+  text-decoration: none;
+}

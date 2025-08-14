@@ -1,0 +1,15 @@
+# Node modules
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Local environment folders
+.soilSenceEnv/
+
+# Secrets & environment variables
+backend/.env
+ee-devdeepnarayan-60e430efcb57.json
+
+# OS & editor files
+.DS_Store
+*.log

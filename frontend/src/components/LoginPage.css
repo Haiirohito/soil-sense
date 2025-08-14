@@ -1,0 +1,47 @@
+/* Left Side - Form */
+.login-container {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 40px;
+}
+
+.login-box {
+  width: 50%;
+  height: 60%;
+  text-align: center;
+}
+
+/* Remember Me & Forgot Password */
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.remember-forgot label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.remember-forgot a {
+  color: blue;
+  text-decoration: none;
+}
+
+/* Signup Text */
+.signup-text {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signup-text a {
+  color: blue;
+  text-decoration: none;
+}

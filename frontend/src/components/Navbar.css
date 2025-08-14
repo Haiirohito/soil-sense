@@ -1,0 +1,121 @@
+/* Modern clean navbar */
+
+.navbar {
+  height: 60px; /* fixed height for alignment */
+  padding: 0 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5b6ef5;
+  color: white;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 22px;
+  color: white;
+  text-decoration: none;
+  margin-left: 12px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+  color: white;
+}
+
+/* Desktop nav links */
+.nav-links {
+  display: flex;
+  align-items: center; /* this ensures vertical centering */
+  gap: 24px;
+}
+
+.nav-links a,
+.nav-user,
+.btn {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: opacity 0.3s;
+}
+
+.nav-links a:hover {
+  opacity: 0.8;
+}
+
+.nav-user {
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+}
+
+.btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+}
+
+.signup {
+  background-color: white;
+  color: #5b6ef5;
+}
+
+.signup:hover {
+  background-color: #e1e4fe;
+}
+
+.signout {
+  background-color: #ef5350;
+  color: white;
+}
+
+.signout:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #5b6ef5;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px;
+    display: none;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a,
+  .btn {
+    width: 100%;
+    padding: 10px 0;
+  }
+}
