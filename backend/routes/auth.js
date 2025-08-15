@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/User");
 
+
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 

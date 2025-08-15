@@ -40,4 +40,3 @@ export const getCalculationHistory = async () => {
 
 // Placeholder functions for Google/Facebook login
 export const googleLogin = () => alert("Google login coming soon!");
-export const facebookLogin = () => alert("Facebook login coming soon!");

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login, googleLogin, facebookLogin } from "./api";
+import { login, googleLogin } from "./api";
 import "./LoginPage.css";
 import "./common.css";
 
@@ -69,11 +69,6 @@ const LoginPage = () => {
           <div className="social-btn" onClick={googleLogin}>
             <img src="/images/google.png" alt="Google Login" />
             Sign in with Google
-          </div>
-
-          <div className="social-btn" onClick={facebookLogin}>
-            <img src="/images/facebook.png" alt="Facebook Login" />
-            Sign in with Facebook
           </div>
 
           <p className="signup-text">
