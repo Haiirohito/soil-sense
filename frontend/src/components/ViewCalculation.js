@@ -20,6 +20,7 @@ const indexColors = {
   GCI: "#9c27b0",
   EVI: "#f44336",
   AWEI: "#607d8b",
+  LST: "#ff5722",
 };
 
 const interpretation = (index, value) => {
@@ -43,6 +44,8 @@ const interpretation = (index, value) => {
       return `EVI ${formattedValue} suggests ${numericValue > 0.5 ? "healthy vegetation" : "low vegetation density"}.`;
     case "AWEI":
       return `AWEI ${formattedValue} indicates ${numericValue > 0 ? "potential water presence" : "no water detected"}.`;
+    case "LST":
+      return `LST ${formattedValue}°C indicates surface temperature; higher means warmer regions.`;
     default:
       return `${index} value: ${formattedValue}`;
   }

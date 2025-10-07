@@ -43,6 +43,7 @@ def calculate_indices(geometry, year):
         .select(["B2", "B3", "B4", "B8", "B11", "B12"])
         .median()
         .clip(aoi)
+        .divide(10000)
     )
 
     # Landsat-8 for LST
@@ -74,6 +75,8 @@ def calculate_indices(geometry, year):
             "SWIR2": s2.select("B12"),
         },
     ).rename("AWEI")
+    lst = l8.select("ST_B10").multiply(0.00341802).add(149.0).subtract(273.15).rename("LST")
+
 
     # Calculate means
     stats = {
@@ -83,6 +86,7 @@ def calculate_indices(geometry, year):
         "GCI": gci.reduceRegion(ee.Reducer.mean(), aoi, 10).get("GCI"),
         "EVI": evi.reduceRegion(ee.Reducer.mean(), aoi, 10).get("EVI"),
         "AWEI": awei.reduceRegion(ee.Reducer.mean(), aoi, 10).get("AWEI"),
+        "LST": lst.reduceRegion(ee.Reducer.mean(), aoi, 30).get("LST"),
     }
 
     return stats
@@ -91,7 +95,7 @@ def calculate_indices(geometry, year):
 def main():
     try:
         request = json.loads(sys.argv[1])
-        geometry = request["geometry"][0] # assuming only one shape
+        geometry = request["geometry"][0]
         years = request.get("years", [])
 
         results = {}
@@ -105,6 +109,7 @@ def main():
 
     except Exception as e:
         print(json.dumps({"error": str(e)}))
+
 
 if __name__ == "__main__":
     main()

@@ -42,6 +42,7 @@ function App() {
     GCI: "#9c27b0",
     EVI: "#f44336",
     AWEI: "#607d8b",
+    LST: "#ff5722",
   };
 
   const interpretation = (index, value) => {
@@ -76,6 +77,8 @@ function App() {
         return `AWEI ${formattedValue} indicates ${
           numericValue > 0 ? "potential water presence" : "no water detected"
         }.`;
+      case "LST":
+        return `LST ${formattedValue}°C indicates surface temperature; higher means warmer regions.`;
       default:
         return `${index} value: ${formattedValue}`;
     }
@@ -114,14 +117,16 @@ function App() {
         }
       );
 
+      console.log("Response data:", res.data);
+
       if (!res.data || res.data.error) {
         setError(res.data?.error || "Invalid response from server");
         setResults(null);
         return;
       }
 
-      setResults(res.data);
-      setSelectedYears(rangeYears);
+      setResults(res.data.results);
+      setSelectedYears(res.data.years);
       setError(null);
     } catch (err) {
       console.error("Error:", err);
@@ -199,7 +204,7 @@ function App() {
 
           {error && <div className="error-message">{error}</div>}
 
-          {results && (
+          {results && Object.keys(results).length > 0 && (
             <div className="results-container">
               <div className="interpretation-panel">
                 <h3>{selectedIndex} Analysis</h3>

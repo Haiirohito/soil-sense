@@ -81,6 +81,16 @@
   .dashboard-tile:hover {
     transform: translateY(-5px);
   }
+
+.dashboard-container {
+  padding: 40px;
+  font-family: sans-serif;
+  max-width: 1200px;
+  margin: auto;
+  height: 100vh;
+  overflow-y: auto;
+}
+
   
   .tile-details {
     padding: 16px;
